@@ -7,7 +7,6 @@ import {
 import { speakWord } from "../utils/textToSpeech";
 import { Settings, Plus, Trash2, X } from "lucide-react";
 
-// --- Default phrases (if local storage is empty) ---
 const INITIAL_PHRASES = [
   "Hello",
   "Goodbye",
@@ -21,7 +20,7 @@ const INITIAL_PHRASES = [
   "I love this!",
 ];
 
-// --- Main Component ---
+
 interface LiveDemoProps {
   onClose: () => void;
 }
@@ -31,11 +30,11 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- State ---
+
   const [liveGesture, setLiveGesture] = useState<string>("Detecting...");
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   
-  // --- New State for Editing ---
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newPhrase, setNewPhrase] = useState<string>("");
   const [phrases, setPhrases] = useState<string[]>(() => {
@@ -43,7 +42,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
     return savedPhrases ? JSON.parse(savedPhrases) : INITIAL_PHRASES;
   });
 
-  // --- Refs ---
+
   const selectedIndexRef = useRef<number>(selectedIndex);
   const cooldownRef = useRef<boolean>(false);
   const gestureRecognizer = useRef<GestureRecognizer | null>(null);
@@ -52,12 +51,12 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
   const isEditingRef = useRef<boolean>(isEditing);
   const selectedPhraseRef = useRef<HTMLDivElement>(null);
 
-  // --- Save phrases to local storage when they change ---
+ 
   useEffect(() => {
     localStorage.setItem("customPhrases", JSON.stringify(phrases));
   }, [phrases]);
 
-  // --- Sync state to refs for use in loops ---
+
   useEffect(() => {
     selectedIndexRef.current = selectedIndex;
   }, [selectedIndex]);
@@ -66,7 +65,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
     isEditingRef.current = isEditing;
   }, [isEditing]);
 
-  // --- Auto-scroll to selected phrase ---
+
   useEffect(() => {
     if (selectedPhraseRef.current) {
       selectedPhraseRef.current.scrollIntoView({
@@ -76,7 +75,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
     }
   }, [selectedIndex, isEditing]);
 
-  // --- Gesture & Camera Setup (useEffect) ---
+  
   useEffect(() => {
     const createGestureRecognizer = async () => {
       try {
@@ -222,9 +221,9 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
         gestureRecognizer.current.close();
       }
     };
-  }, [isEditing, phrases]); // Re-run when phrases list changes
+  }, [isEditing, phrases]); 
 
-  // --- Handlers for adding/deleting phrases ---
+
   const handleAddNewPhrase = () => {
     if (newPhrase.trim() !== "") {
       setPhrases([...phrases, newPhrase.trim()]);
@@ -239,7 +238,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        {/* --- Close and Settings Buttons --- */}
+ 
         <button onClick={onClose} style={closeButtonStyle}>
           <X size={30} />
         </button>
@@ -250,9 +249,8 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
           <Settings size={24} />
         </button>
 
-        {/* --- Conditional UI: Editing or Gestures --- */}
         {isEditing ? (
-          // --- EDITING MODE UI ---
+     
           <div style={editModeStyle}>
             <h2 style={{ color: "white", marginBottom: "20px" }}>
               Customize Phrases
@@ -284,12 +282,12 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
             </div>
           </div>
         ) : (
-          // --- GESTURE MODE UI (New Sidebar Layout) ---
+       
           <>
             <p style={liveGestureStyle}>Detecting: {liveGesture}</p>
-            {/* --- 1. NEW: Main container for sidebar layout --- */}
+   
             <div style={gestureModeContainerStyle}>
-              {/* --- 2. NEW: Sidebar (Left) --- */}
+             
               <div style={sidebarStyle}>
                 <div style={phraseListStyle}>
                   {phrases.map((phrase, index) => (
@@ -309,7 +307,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
                 </p>
               </div>
               
-              {/* --- 3. NEW: Main Content (Right) --- */}
+         
               <div style={mainContentStyle}>
                 {isLoading && <p style={loadingStyle}>Loading Model & Camera...</p>}
                 <video ref={videoRef} style={videoStyle} playsInline />
@@ -323,7 +321,7 @@ const LiveDemo: React.FC<LiveDemoProps> = ({ onClose }) => {
   );
 };
 
-// --- Styles ---
+
 const overlayStyle: React.CSSProperties = {
   position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
   backgroundColor: "rgba(0, 0, 0, 0.9)", display: "flex",
@@ -332,7 +330,7 @@ const overlayStyle: React.CSSProperties = {
 const modalStyle: React.CSSProperties = {
   position: "relative", background: "#222", border: "1px solid #444",
   borderRadius: "10px", padding: "20px", width: "90vw",
-  maxWidth: "900px", // --- WIDER MODAL ---
+  maxWidth: "900px",
   maxHeight: "90vh",
   display: "flex", flexDirection: "column",
 };
@@ -349,33 +347,33 @@ const liveGestureStyle: React.CSSProperties = {
   position: "absolute", top: "60px", left: "20px", zIndex: 10,
 };
 
-// --- NEW: Styles for Sidebar Layout ---
+
 const gestureModeContainerStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   gap: "20px",
-  marginTop: "40px", // Pushed down to make room for 'Detecting' text
+  marginTop: "40px", 
 };
 const sidebarStyle: React.CSSProperties = {
-  flex: 1, // Takes up 1 part
-  minWidth: "300px", // Don't let it get too small
+  flex: 1,
+  minWidth: "300px", 
   display: "flex",
   flexDirection: "column",
 };
 const mainContentStyle: React.CSSProperties = {
-  flex: 1.5, // Takes up 1.5 parts (wider than sidebar)
+  flex: 1.5, 
   position: "relative",
 };
-// --- End New Styles ---
+
 
 const phraseListStyle: React.CSSProperties = {
-  margin: "0 0 10px 0", // No top margin
+  margin: "0 0 10px 0", 
   padding: "10px", background: "#111",
   border: "1px solid #555", borderRadius: "8px",
-  maxHeight: "400px", // Taller scroll list
+  maxHeight: "400px", 
   overflowY: "auto",
   textAlign: "left",
-  flexGrow: 1, // Allow list to grow
+  flexGrow: 1, 
 };
 const phraseStyle: React.CSSProperties = {
   color: "#888", fontSize: "1.5rem", padding: "10px",
@@ -403,7 +401,7 @@ const canvasStyle: React.CSSProperties = {
   width: "100%", height: "auto", borderRadius: "8px",
 };
 
-// --- Styles for Edit Mode ---
+
 const editModeStyle: React.CSSProperties = {
   paddingTop: "40px",
 };
